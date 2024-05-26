@@ -1,22 +1,36 @@
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
 import Card from './Card'
 import Container from '../Shared/Container'
 import Heading from '../Shared/Heading'
 import LoadingSpinner from '../Shared/LoadingSpinner'
+import useAxiosSecure from '../../hooks/useAxiosSecure'
+import { useQuery } from '@tanstack/react-query'
+
 
 const Rooms = () => {
-  const [rooms, setRooms] = useState([])
-  const [loading, setLoading] = useState(false)
+  // const [rooms, setRooms] = useState([])
+  // const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    setLoading(true)
-    fetch(`http://localhost:8000/rooms`)
-      .then(res => res.json())
-      .then(data => {
-        setRooms(data)
-        setLoading(false)
-      })
-  }, [])
+  // useEffect(() => {
+  //   setLoading(true)
+  //   fetch(`http://localhost:8000/rooms`)
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setRooms(data)
+  //       setLoading(false)
+  //     })
+  // }, [])
+
+  const axiosSecure = useAxiosSecure();
+  const { isPending: loading, data : rooms=[] } = useQuery({
+    queryKey: ['rooms'],
+    queryFn:async () =>{
+      const {data} = await axiosSecure.get('/rooms')
+      return data;
+    }
+    
+  })
+
 
   if (loading) return <LoadingSpinner />
 
